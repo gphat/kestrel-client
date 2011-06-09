@@ -1,0 +1,54 @@
+# NAME
+
+kestrel-client - Kestrel text-mode client for Java
+
+# SYNOPSIS
+
+    Client kestrel = null;
+    String queueName = "test-net-kestrel";
+
+    try {
+        kestrel = new Client("10.0.1.36");
+        kestrel.connect();
+
+        // Flush the queue
+        kestrel.flush(queueName);
+
+        // Put something in the queue
+        kestrel.put(queueName, "hello world!");
+        
+        // Take a peek
+        String peek = kestrel.peek(queueName);
+        
+        // And get the next item (which is the same as what we peeked)
+        String val = kestrel.get(queueName);
+
+        // Do some work with the item
+
+        // Confirm it, removing it from the queue
+
+        // Be done with it
+        kestrel.disconnect();
+    
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+
+# DESCRIPTION
+
+kestrel-client is a __text protocol__ client for [https://github.com/robey/kestrel](https://github.com/robey/kestrel).
+
+# DEPENDENCIES
+
+kestrel-clients only dependency is slf4j.
+
+# AUTHOR
+
+Cory G Watson <gphat@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Infinity Interactive, Inc.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.

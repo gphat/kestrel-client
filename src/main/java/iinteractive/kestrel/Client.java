@@ -96,7 +96,25 @@ public class Client {
      */
     public String get(String queueName) throws IOException, KestrelException {
 
-    	return writeAndRead("get " + queueName);
+    	return get(queueName, 0);
+    }
+
+    /**
+     * Get an item from the specified queue.
+     *
+     * @param queueName THe name of the queue
+     * @param timeout The timeout to wait for an item
+     * @return The item from the queue (or null)
+     * @throws IOException
+     * @throws KestrelException
+     */
+    public String get(String queueName, long timeout) throws IOException, KestrelException {
+
+    	String cmd = "get " + queueName;
+    	if(timeout > 0) {
+    		cmd += " " + timeout;
+    	}
+    	return writeAndRead(cmd);
     }
 
     /**
@@ -110,6 +128,24 @@ public class Client {
     public String peek(String queueName) throws IOException, KestrelException {
 
     	return writeAndRead("peek " + queueName);
+    }
+
+    /**
+     * "Peek" at the queue to see what the next item is.
+     *
+     * @param queueName The name of the queue
+     * @param timeout The timeout to wait for an item
+     * @return The item from the queue
+     * @throws IOException
+     * @throws KestrelException
+     */
+    public String peek(String queueName, long timeout) throws IOException, KestrelException {
+
+    	String cmd = "peek " + queueName;
+    	if(timeout > 0) {
+    		cmd += " " + timeout;
+    	}
+    	return writeAndRead(cmd);
     }
 
     /**
@@ -130,6 +166,7 @@ public class Client {
     	logger.debug("SENDING: " + command);
 
     	out.println(command);
+    	out.flush();
     	String resp = in.readLine();
 
     	if(resp == null) {
@@ -142,13 +179,13 @@ public class Client {
 
     	if(resp.startsWith(":")) {
 
-    		retVal = resp.substring(1);
+    		retVal = resp.substring(1).trim();
     	} else if(resp.startsWith("+")) {
 
-    		retVal = resp.substring(1);
+    		retVal = resp.substring(1).trim();
     	} else if(resp.startsWith("-")) {
 
-    		throw new KestrelException(resp.substring(1));
+    		throw new KestrelException(resp.substring(1).trim());
     	} else if(resp.equals("*")) {
 
     		// There's no reason to set this, but I want it to be clear that

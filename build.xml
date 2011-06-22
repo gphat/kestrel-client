@@ -3,15 +3,10 @@
 
  <property name="build" value="build" />
  <property name="libs" value="libs" />
- <property name="libs.test" value="testlibs" />
  <property name="src" value="src/main/java" />
- <property name="src.tests" value="src/test/java" />
 
  <path id="classpath">
   <fileset dir="${libs}">
-   <include name="**/*.jar"/>
-  </fileset>
-  <fileset dir="${libs.test}">
    <include name="**/*.jar"/>
   </fileset>
   <pathelement path="${build}" />
@@ -42,30 +37,13 @@
   <copy file="log4j.properties" todir="${build}" overwrite="true" />
  </target>
 
- <target name="compile-tests" depends="compile">
-  <javac destdir="${build}" srcdir="${src.tests}" debug="true">
-   <classpath refid="classpath"/>
-  </javac>
- </target>
-
-
- <target name="test" depends="compile-tests">
-  <junit printsummary="yes" haltonfailure="yes" showoutput="yes">
-   <classpath refid="classpath"/>
-
-   <batchtest fork="yes">
-    <fileset dir="${src.tests}">
-     <include name="**/*.java"/>
-    </fileset>
-<!--    <formatter type="failure"/>-->
-    <!-- I want to see something ... -->
-    <formatter type="plain" usefile="false"/>
-   </batchtest>
-  </junit>
- </target>
-
  <target name="jar" depends="compile">
-  <jar destfile="${build}/kestrel-client.jar" basedir="${build}" />
+  <exec executable="git" outputproperty="gitversion">
+   <arg value="rev-parse" />
+   <arg value="--short" />
+   <arg value="HEAD" />
+  </exec>
+  <jar destfile="${build}/kestrel-client-${gitversion}.jar" basedir="${build}" />
  </target>
 
 </project>

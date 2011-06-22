@@ -76,6 +76,11 @@ public class Client {
     	}
     }
 
+    public void delete(String queueName) throws IOException, KestrelException {
+
+    	writeAndRead("delete " + queueName);
+    }
+
     /**
      * Flush the specified queue.
      *
